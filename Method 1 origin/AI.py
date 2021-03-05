@@ -71,7 +71,7 @@ class ComputerPlayer(AI):
         # action choice is not just dependent on Q table value but on expect value (Q table value x probability)
         P_current=self.prob(self.total_dice, current_bet.quantity-self.count_dice(current_bet.value), current_bet.value)
         # probability of current bet
-        Max = (1 - P_current) * q_table[current_bet.quantity-1, current_bet.value-1, 0, 0]
+        Max = (1 - P_current) * q_table[current_bet.quantity - 1, current_bet.value - 1, 0, 0]
         locationx = 0
         locationy = 0
         value = random.choice(self.dice).value
@@ -135,7 +135,7 @@ class ComputerPlayer(AI):
 
             # find the max Q table value
             Max = 0
-            for k in range(0,self.total_dice+1):
+            for k in range(0,self.total_dice + 1):
                 for l in range(0,7):
                     pre_q = current_bet.quantity + Action[0]
                     pre_v = Action[1]
@@ -144,12 +144,12 @@ class ComputerPlayer(AI):
 
             q_target = (1 - self.reward(bet)) + Lambda * Max
             # system will check if the bet satisfy dudo, if satisfy, reward = 0, otherwise reward = 1
-            self.table[current_bet.quantity-1, current_bet.value-1, Action[0], Action[1]] += alpha * (q_target - q_predict)
+            self.table[current_bet.quantity - 1, current_bet.value - 1, Action[0], Action[1]] += alpha * (q_target - q_predict)
 
         else:
             q_target = self.reward(current_bet) * 10 # if correct dudo, reward = 10
-            q_predict = self.table[current_bet.quantity-1, current_bet.value-1, 0, 0]
-            self.table[current_bet.quantity-1, current_bet.value-1, 0, 0] += alpha * (q_target - q_predict)
+            q_predict = self.table[current_bet.quantity - 1, current_bet.value - 1, 0, 0]
+            self.table[current_bet.quantity - 1, current_bet.value - 1, 0, 0] += alpha * (q_target - q_predict)
 
 
     def make_bet(self, current_bet):
