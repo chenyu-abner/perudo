@@ -186,6 +186,34 @@ class ComputerPlayer(AI):
         return bet
 
 
+class TotalRandom(AI):
+    def make_bet(self, current_bet):
+        if current_bet is None:
+            value = random.choice(self.dice).value
+            quantity_limit = (self.game.total_dice - len(self.dice)) / 6
+
+            if value > 1:
+                quantity_limit *= 2
+
+            quantity = self.count_dice(value) + random.randrange(0, ceil(quantity_limit + 1))
+            bet = create_bet(quantity, value, current_bet, self, self.game)
+
+        else:
+            if np.random.uniform() < 0.5:
+                return DUDO
+            else:
+                value = random.choice(self.dice).value
+                quantity = current_bet.quantity + 1
+                if quantity > self.game.total_dice:
+                    return DUDO
+                else:
+                    try:
+                        bet = create_bet(quantity, value, current_bet, self, self.game)
+                    except BetException:
+                        bet = None
+
+        return bet
+
 class HumanPlayer(AI):
 
     def make_bet(self, current_bet):
@@ -275,34 +303,6 @@ class RandomPlayer(AI):
                             else:
                                 quantity = current_bet.quantity + 1
 
-                    try:
-                        bet = create_bet(quantity, value, current_bet, self, self.game)
-                    except BetException:
-                        bet = None
-
-        return bet
-
-class TotalRandom(AI):
-    def make_bet(self, current_bet):
-        if current_bet is None:
-            value = random.choice(self.dice).value
-            quantity_limit = (self.game.total_dice - len(self.dice)) / 6
-
-            if value > 1:
-                quantity_limit *= 2
-
-            quantity = self.count_dice(value) + random.randrange(0, ceil(quantity_limit + 1))
-            bet = create_bet(quantity, value, current_bet, self, self.game)
-
-        else:
-            if np.random.uniform() < 0.5:
-                return DUDO
-            else:
-                value = random.choice(self.dice).value
-                quantity = current_bet.quantity + 1
-                if quantity > self.game.total_dice:
-                    return DUDO
-                else:
                     try:
                         bet = create_bet(quantity, value, current_bet, self, self.game)
                     except BetException:
