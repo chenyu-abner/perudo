@@ -34,11 +34,6 @@ class AI(object):
         for i in range(0, dice_number):
             self.dice.append(Die())
         self.total_dice = self.game.total_dice
-        self.table = np.zeros((self.game.total_dice, 6, self.game.total_dice + 1, 7))
-        # build a 4-D Q table with quantity, value, quantity action(dudo, +0, +1...) and value action(value -> value/dudo)
-        # position [x,y,0,0] are all dudo
-
-
 
     def roll_dice(self):
         for die in self.dice:
@@ -66,6 +61,12 @@ class AI(object):
         return P
 
 class ComputerPlayer(AI):
+    
+    def __init__(self, name, dice_number, game):
+        super(ComputerPlayer, self).__init__(name, dice_number, game)
+        self.table = np.zeros((self.game.total_dice, 6, self.game.total_dice + 1, 7))
+        # build a 4-D Q table with quantity, value, quantity action(dudo, +0, +1...) and value action(value -> value/dudo)
+        # position [x,y,0,0] are all dudo
 
     def choose_action(self, q_table, current_bet):
         # action choice is not just dependent on Q table value but on expect value (Q table value x probability)
