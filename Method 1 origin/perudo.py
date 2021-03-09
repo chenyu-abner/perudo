@@ -3,6 +3,7 @@ import sys
 from bet import DUDO
 from AI import ComputerPlayer
 from AI import RandomPlayer
+from AI import TotalRandom
 from strings import INSUFFICIENT_BOTS
 from strings import INSUFFICIENT_DICE
 import matplotlib.pyplot as plt
@@ -132,11 +133,11 @@ def get_argv(args, index, default):
 
 def main(args):
 	name = get_argv(args, 1, 'Player')
-	bot_number = int(get_argv(args, 2, 5))
+	bot_number = int(get_argv(args, 2, 3))
 	if bot_number < 1:
 		print(INSUFFICIENT_BOTS)
 		return
-	dice_number = int(get_argv(args, 3, 6))
+	dice_number = int(get_argv(args, 3, 4))
 	if dice_number < 1:
 		print(INSUFFICIENT_DICE)
 		return
