@@ -3,23 +3,10 @@ from tensorflow import keras
 from AI import AI
 import random
 import numpy as np
-from scipy.special import comb
 from bet import DUDO
 from bet import create_bet
 from bet_exceptions import BetException
-from bet_exceptions import InvalidDieValueException
-from bet_exceptions import NonPalificoChangeException
-from bet_exceptions import InvalidNonWildcardQuantityException
-from bet_exceptions import InvalidWildcardQuantityException
-from bet_exceptions import InvalidBetException
-from die import Die
 from math import ceil
-from strings import BAD_BET_ERROR
-from strings import INVALID_DIE_VALUE_ERROR
-from strings import NON_PALIFICO_CHANGE_ERROR
-from strings import INVALID_NON_WILDCARD_QUANTITY
-from strings import INVALID_WILDCARD_QUANTITY
-from strings import INVALID_BET_EXCEPTION
 
 action_dim = 19
 class PGModel(tf.keras.Model):
