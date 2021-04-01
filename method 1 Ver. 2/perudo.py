@@ -2,9 +2,7 @@ import random
 import sys
 import numpy as np
 from bet import DUDO
-from AI import ComputerPlayer
-from AI import RandomPlayer
-from AI import TotalRandom
+from AI_p import RandomPlayer
 from AI_P import AI_P
 from strings import INSUFFICIENT_BOTS
 from strings import INSUFFICIENT_DICE
@@ -44,7 +42,7 @@ class Perudo(object):
 		rounds = []
 		round_number=0
 
-		for i in tqdm(range(300)):
+		for i in tqdm(range(500)):
 			for k in range(0, len(total_players)):
 				total_players[k].reset()
 				self.players.append(total_players[k])
@@ -62,26 +60,12 @@ class Perudo(object):
 
 			for j in range(0, player_number):
 				if total_players[j].name == name:
-					odds.append(total_players[j].score / round_number)
-
-
-
-
-		for i in range(0, player_number):
-			print('{0} has score '.format(total_players[i].name) + str(total_players[i].score))
-
+					odds.append(1-total_players[j].score / round_number)
 
 		plt.plot(rounds, odds)
 		plt.xlabel('Iterations')
 		plt.ylabel('odds')
 		plt.show()
-
-	def smooth_reward(self, ep_reward, smooth_over):
-		smoothed_r = []
-		for ii in range(smooth_over, len(ep_reward)):
-			smoothed_r.append(np.mean(ep_reward[ii-smooth_over:ii]))
-		return smoothed_r
-
 
 	def run_round(self):
 		self.round += 1
@@ -94,13 +78,7 @@ class Perudo(object):
 		while not round_over:
 			next_player = self.get_next_player(current_player)
 			next_bet = current_player.make_bet(current_bet)
-			bet_string = None
-
-
-			if next_bet == DUDO:
-				bet_string = 'Dudo!'
-			else:
-				bet_string = next_bet
+			
 			if next_bet == DUDO:
 				self.run_dudo(current_player, current_bet)
 				round_over = True
@@ -112,15 +90,14 @@ class Perudo(object):
 
 
 	def run_dudo(self, player, bet):
-		dice_count = self.count_dice(bet.value)
 		previous_player = self.get_previous_player(player)
-		if dice_count >= bet.quantity:
+		dice_count = self.count_dice(bet.value)
+		if dice_count < bet.quantity:
 			self.first_player = player
 			self.remove_die(previous_player)
 		else:
 			self.first_player = previous_player
 			self.remove_die(player)
-
 		self.total_dice=self.total_dice-1
 
 
