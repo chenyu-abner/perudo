@@ -60,30 +60,16 @@ class Perudo(object):
 			self.players[0].score += 1
 			self.players = []
 			self.total_dice = player_number * dice_number
-
+			
 			for j in range(0, player_number):
+				# self.players[j].score += 1
 				if total_players[j].name == name:
-					reward = total_players[j].rewards + reward*0.9
-					odds.append(reward)
-
-
-
-
-		for i in range(0, player_number):
-			print('{0} has score '.format(total_players[i].name) + str(total_players[i].score))
-
-
-		plt.plot(rounds[2000:], self.smooth_reward(odds,2000))
+					odds.append(total_players[j].score / round_number)
+			
+		plt.plot(rounds[10:], odds[10:])
 		plt.xlabel('Iterations')
-		plt.ylabel('Commulative reward')
+		plt.ylabel('Proportion of AI wins')
 		plt.show()
-
-	def smooth_reward(self, ep_reward, smooth_over):
-		smoothed_r = []
-		for ii in range(smooth_over, len(ep_reward)):
-			smoothed_r.append(np.mean(ep_reward[ii-smooth_over:ii]))
-		return smoothed_r
-
 
 	def run_round(self):
 		self.round += 1
@@ -96,13 +82,7 @@ class Perudo(object):
 		while not round_over:
 			next_player = self.get_next_player(current_player)
 			next_bet = current_player.make_bet(current_bet)
-			bet_string = None
-
-
-			if next_bet == DUDO:
-				bet_string = 'Dudo!'
-			else:
-				bet_string = next_bet
+			
 			if next_bet == DUDO:
 				self.run_dudo(current_player, current_bet)
 				round_over = True
@@ -113,16 +93,15 @@ class Perudo(object):
 				current_player = next_player
 
 
-	def run_dudo(self, player, bet):
-		dice_count = self.count_dice(bet.value)
+		def run_dudo(self, player, bet):
 		previous_player = self.get_previous_player(player)
-		if dice_count >= bet.quantity:
+		dice_count = self.count_dice(bet.value)
+		if dice_count < bet.quantity:
 			self.first_player = player
 			self.remove_die(previous_player)
 		else:
 			self.first_player = previous_player
 			self.remove_die(player)
-
 		self.total_dice=self.total_dice-1
 
 
