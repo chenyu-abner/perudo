@@ -102,7 +102,7 @@ class ComputerPlayer(AI):
                     if k == 1:
                         for l in range(current_bet.value + 1, 7):
                             pre_v = l
-                            P = self.prob(self.game.total_dice, pre_q - self.count_dice(pre_v), pre_v)
+                            P = self.prob(self.game.total_dice-len(self.dice), pre_q - self.count_dice(pre_v), pre_v)
                             if q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P > Max:
                                 Max = q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P
                                 locationx, locationy = k, l
@@ -110,7 +110,7 @@ class ComputerPlayer(AI):
                     else:
                         for l in range(1, 7):
                             pre_v = l
-                            P = self.prob(self.game.total_dice, pre_q - self.count_dice(pre_v), pre_v)
+                            P = self.prob(self.game.total_dice-len(self.dice), pre_q - self.count_dice(pre_v), pre_v)
                             if q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P > Max:
                                 Max = q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P
                                 locationx, locationy = k, l
