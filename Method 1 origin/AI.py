@@ -154,7 +154,7 @@ class ComputerPlayer(AI):
 
 
     def make_bet(self, current_bet):
-
+        print('enemy bet = {0}'.format(current_bet))
         if current_bet is None:
             value = random.choice(self.dice).value
             quantity_limit = (self.total_dice - len(self.dice)) / 6
@@ -176,6 +176,7 @@ class ComputerPlayer(AI):
                 bet = create_bet(act_q, act_v, current_bet, self, self.game)
 
             self.Qtable(current_bet, bet)
+            print('AI bet = {0}'.format(bet))
         return bet
 
 
@@ -276,7 +277,7 @@ class TotalRandom(AI):
             bet = create_bet(quantity, value, current_bet, self, self.game)
 
         else:
-            if np.random.uniform() < 0.2:
+            if np.random.uniform() < 0.4:
                 return DUDO
             else:
                 value = random.choice(self.dice).value
