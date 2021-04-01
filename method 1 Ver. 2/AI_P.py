@@ -10,7 +10,7 @@ from die import Die
 from math import ceil
 
 action_dim = 19
-class PGModel(tf.keras.Model):
+class Perudo_learn_Model(tf.keras.Model):
     def __init__(self):
         super().__init__()
         self.dense1 = keras.layers.Dense(200, activation='relu')
@@ -28,9 +28,9 @@ class PGModel(tf.keras.Model):
         return output
 
 
-class PG():
+class Perudo_train():
     def __init__(self):
-        self.model = PGModel()
+        self.model = Perudo_learn_Model()
 
     def choose_action(self, s):
         prob = self.model.predict(np.array([s]))[0]
@@ -44,25 +44,24 @@ class PG():
             prob = prob / np.sum(prob)
         return np.random.choice(len(prob), p=prob)
 
-    def discount_reward(self, rewards, final_re, gamma=0.9):  # 衰减reward 通过最后一步奖励反推真实奖励
+    def discount_reward(self, rewards, final_re, gamma=0.9):  # Decaying Reward Inverts the real reward by the last reward step
         out = np.zeros_like(rewards)
         dis_reward = final_re
 
         for i in reversed(range(len(rewards))):
-            dis_reward = dis_reward + gamma * rewards[i]  # 前一步的reward等于后一步衰减reward加上即时奖励乘以衰减因子
+            # The reward of the previous step is equal to the decay reward of the next step plus the immediate reward multiplied by the decay factor
+            dis_reward = dis_reward + gamma * rewards[i]  
             out[i] = dis_reward
         return out / np.std(out - np.mean(out))
 
     def all_actf(self):
-        all_act = self.model.x
         return all_act
 
     def reca_batch(self, a_batch):
-        a = a_batch
         return a
 
-    def train(self, records, final_re):  # 训练
-        s_batch = np.array([record[0] for record in records])# 取状态，每次batch个状态
+    def train(self, records, final_re):  # train
+        s_batch = np.array([record[0] for record in records])# Fetch state, one state at a time
         a_batch = np.array([[1 if record[1] == i else 0 for i in range(action_dim)]
                             for record in records])
         self.reca_batch(a_batch)
@@ -118,12 +117,21 @@ class AI(object):
             # avoid incorrect bet
             P = 0
         return P
+    
+    def reward(self, bet):
+        # check whether the bet is valid
+        dice_count = self.game.count_dice(bet.value)
+        if dice_count < bet.quantity:
+            re = 0
+        else:
+            re = 1
+        return re
 
 
 class AI_P(AI):
 
     def __init__(self, name, dice_number, game):
-        self.method = PG()
+        self.method = Perudo_train()
         self.record = []
         super(AI_P, self).__init__(name, dice_number, game)
 
@@ -150,10 +158,10 @@ class AI_P(AI):
                 quantity = ceil(action / 6) + current_bet.quantity
                 try:
                     bet = create_bet(quantity, value, current_bet, self, self.game)
-                    reward = - self.reward(bet)
+                    reward = 1 - self.reward(bet)
                 except BetException:
                     bet = None
-                    reward = -1
+                    reward = 0
             self.record.append((abservation, action, reward))
         return bet
 
