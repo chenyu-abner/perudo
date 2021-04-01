@@ -96,7 +96,7 @@ class ComputerPlayer(AI):
                     if k == 1:
                         for l in range(current_bet.value + 1, 7):
                             pre_v = l
-                            P = self.prob(self.total_dice, pre_q - self.count_dice(pre_v), pre_v)
+                            P = self.prob(self.total_dice-len(self.dice), pre_q - self.count_dice(pre_v), pre_v)
                             if q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P > Max:
                                 Max = q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P
                                 locationx, locationy = k, l
@@ -104,7 +104,7 @@ class ComputerPlayer(AI):
                     else:
                         for l in range(1, 7):
                             pre_v = l
-                            P = self.prob(self.total_dice, pre_q - self.count_dice(pre_v), pre_v)
+                            P = self.prob(self.total_dice-len(self.dice), pre_q - self.count_dice(pre_v), pre_v)
                             if q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P > Max:
                                 Max = q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P
                                 locationx, locationy = k, l
@@ -240,7 +240,7 @@ class RandomPlayer(AI):
 
         else:
             # Estimate the probability of current bet
-            P_current = self.prob(self.total_dice, current_bet.quantity - self.count_dice(current_bet.value),current_bet.value)
+            P_current = self.prob(self.total_dice-len(self.dice), current_bet.quantity - self.count_dice(current_bet.value),current_bet.value)
             # Estimate the number of dice in the game with the bet's value
             limit = ceil(self.total_dice / 6.0) + random.randrange(0, ceil(self.total_dice / 4.0))
             if current_bet.quantity >= limit or P_current < 0.2:
