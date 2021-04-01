@@ -70,9 +70,9 @@ class ComputerPlayer(AI):
 
     def choose_action(self, q_table, current_bet):
         # action choice is not just dependent on Q table value but on expect value (Q table value x probability)
-        P_current=self.prob(self.total_dice, current_bet.quantity-self.count_dice(current_bet.value), current_bet.value)
+        P_current=self.prob(self.total_dice - len(self.dice), current_bet.quantity-self.count_dice(current_bet.value), current_bet.value)
         # probability of current bet
-        Max = (1 - P_current) * q_table[current_bet.quantity - 1, current_bet.value - 1, 0, 0]
+        Max = P_current * q_table[current_bet.quantity - 1, current_bet.value - 1, 0, 0]
         locationx = 0
         locationy = 0
         value = random.choice(self.dice).value
@@ -109,7 +109,7 @@ class ComputerPlayer(AI):
                                 Max = q_table[current_bet.quantity - 1, current_bet.value - 1, k, l] * P
                                 locationx, locationy = k, l
 
-                if Max == (1 - P_current) * q_table[current_bet.quantity-1, current_bet.value-1, 0, 0]:
+                if Max == P_current * q_table[current_bet.quantity-1, current_bet.value-1, 0, 0]:
                     if Max == 0:
                         # if Q table still not complete, choose randomly
                         return random.randrange(1, 3), value
@@ -121,7 +121,7 @@ class ComputerPlayer(AI):
     def reward(self, bet):
         # check whether the bet is valid
         dice_count = self.game.count_dice(bet.value)
-        if dice_count >= bet.quantity:
+        if dice_count < bet.quantity:
             re = 0
         else:
             re = 1
@@ -241,12 +241,8 @@ class RandomPlayer(AI):
             # Estimate the probability of current bet
             P_current = self.prob(self.total_dice, current_bet.quantity - self.count_dice(current_bet.value),current_bet.value)
             # Estimate the number of dice in the game with the bet's value
-            if current_bet.value == 1 or self.game.is_palifico_round():
-                # There should be twice as many of any value than 1
-                limit = ceil(self.total_dice / 6.0) + random.randrange(0, ceil(self.total_dice / 4.0))
-            else:
-                limit = ceil(self.total_dice / 6.0) * 2 + random.randrange(0, ceil(self.total_dice / 4.0))
-            if current_bet.quantity >= limit or P_current < 0.1:
+            limit = ceil(self.total_dice / 6.0) + random.randrange(0, ceil(self.total_dice / 4.0))
+            if current_bet.quantity >= limit or P_current < 0.2:
                 return DUDO
             else:
                 bet = None
@@ -258,16 +254,7 @@ class RandomPlayer(AI):
                         quantity = current_bet.quantity + 1
                     else:
                         value = random.choice(self.dice).value
-                        if value == 1:
-                            if current_bet.value > 1:
-                                quantity = int(ceil(current_bet.quantity / 2.0))
-                            else:
-                                quantity = current_bet.quantity + 1
-                        else:
-                            if current_bet.value == 1:
-                                quantity = current_bet.quantity * 2 + 1
-                            else:
-                                quantity = current_bet.quantity + 1
+                        quantity = current_bet.quantity + 1
 
                     try:
                         bet = create_bet(quantity, value, current_bet, self, self.game)
