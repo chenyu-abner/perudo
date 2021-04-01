@@ -93,7 +93,7 @@ class Perudo(object):
 
 	def run_dudo(self, player, bet):
 		dice_count = self.count_dice(bet.value)
-		if dice_count >= bet.quantity:
+		if dice_count < bet.quantity:
 			print (incorrect_dudo(dice_count, bet.value))
 			self.first_player = player
 		else:
