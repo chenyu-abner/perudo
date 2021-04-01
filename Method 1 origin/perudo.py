@@ -89,16 +89,22 @@ class Perudo(object):
 			if len(self.players) > 1:
 				current_player = next_player
 
-
 	def run_dudo(self, player, bet):
+		previous_player = self.get_previous_player(player)
+		print ('{0} call dudo for {1}: {2}'.format(player.name, previous_player.name, bet))
 		dice_count = self.count_dice(bet.value)
-		if dice_count >= bet.quantity:
+		print(dice_count)
+		#####
+		if dice_count < bet.quantity:
+			#####
 			self.first_player = player
+			# previous_player.score -= 1
 		else:
-			previous_player = self.get_previous_player(player)
 			self.first_player = previous_player
+			# player.score -= 1
+		print('{0} win'.format(self.first_player.name))
 		self.first_player.score += 1
-
+		
 	def count_dice(self, value):
 		number = 0
 		for player in self.players:
