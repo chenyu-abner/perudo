@@ -73,13 +73,7 @@ class Perudo(object):
 		while not round_over:
 			next_player = self.get_next_player(current_player)
 			next_bet = current_player.make_bet(current_bet)
-			bet_string = None
-
-
-			if next_bet == DUDO:
-				bet_string = 'Dudo!'
-			else:
-				bet_string = next_bet
+			
 			if next_bet == DUDO:
 				self.run_dudo(current_player, current_bet)
 				round_over = True
